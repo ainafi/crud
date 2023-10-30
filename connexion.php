@@ -6,7 +6,6 @@ try {
 }
 // inscription de l'utilisateur et envoie de l'utilisateur a la base de donnee
 
-
 if (isset($_POST['signIn'])) {
     // verifier si la formulaire est vide 
     if (empty($_POST['name']) || empty($_POST['phone']) || empty($_POST['password'])) {
@@ -21,10 +20,12 @@ if (isset($_POST['signIn'])) {
             echo "<h4 class='bg-danger'>Lutilisateur existe déjà</h4>";
         } else {
             $insertIn = $db->prepare('INSERT INTO users (name, phone, password) VALUES (:name, :phone, :password)');
+            $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+           
             $result = $insertIn->execute([
                 'name' => $_POST['name'],
                 'phone' => $_POST['phone'],
-                'password' => $_POST['password'],
+                'password' => $password
             ]);
 
             if ($result) {
@@ -35,6 +36,28 @@ if (isset($_POST['signIn'])) {
         }
     }
 }
+
+// connexion si l'utilisateur est enregistrer
+if(isset($_POST['name']) && isset($_POST['password'])){
+    $name=$_POST['name'];
+    $password=$_POST['password'];
+
+    $select=$db->prepare('SELECT * FROM users WHERE name=:name');
+    $select->execute([
+        'name'=>$name,
+    ]);
+
+    $user=$select->fetch();
+    if($user && password_verify($password ,$user['password'])){
+        session_start();
+        $_SESSION['user_id']=$user['id'];
+        header('location:index.php');
+    }
+    else{
+        echo 'introuvable';
+    }
+}
+
 ?>
 
 
@@ -91,11 +114,11 @@ if (isset($_POST['signIn'])) {
                              placeholder="your phone here">
                             <label class="mb-1">password</label>
                             <input
-                             type="text"
-                             name="phone"
+                             type="password"
+                             name="password"
                              class="form-control"
-                             placeholder="your phone here">
-                             <button class=" p mt-3 btn btn-secondary" type="submit">sign up</button>
+                            >
+                             <button class=" p mt-3 btn btn-secondary" name="signUp" type="submit">sign up</button>
                         </form>
                     </div>
                 </div>

@@ -1,4 +1,9 @@
 <?php
+session_start();
+if(!isset($_SESSION['user_id'])){
+    header('location:connexion.php');
+    exit;
+}
 try {
     $base = new PDO('mysql:host=localhost;dbname=site', 'root', '');
 } catch (Exception $e) {

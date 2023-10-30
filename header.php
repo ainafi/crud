@@ -1,3 +1,11 @@
+<?php
+session_start();
+// if(!isset($_SESSION['user_id'])){
+//     header('location:connexion.php');
+//     exit;
+// }
+?>
+
 <header>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -15,6 +23,10 @@
             </li>
            
         </ul>
+
+        <div>
+            <a href="deconnexion.php">deconnexion</a>
+        </div>
         </div>
     </div>
     </nav>
